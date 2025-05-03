@@ -1,5 +1,5 @@
-export const runtime = "nodejs";
-import bcrypt from "bcrypt";
+// app/seed/route.js
+import bcrypt from "bcrypt"; // Zostawiamy import, ale modyfikujemy użycie
 import postgres from "postgres";
 import { invoices, customers, revenue, users } from "../lib/placeholder-data";
 
@@ -18,7 +18,10 @@ async function seedUsers() {
 
   const insertedUsers = await Promise.all(
     users.map(async (user) => {
-      const hashedPassword = await bcrypt.hash(user.password, 10);
+      // Zamiast hashowania, użyjmy tylko prefiksu - TYLKO do celów wdrożenia
+      // const hashedPassword = await bcrypt.hash(user.password, 10);
+      const hashedPassword = "hashed_" + user.password; // Tymczasowe obejście
+
       return sql`
         INSERT INTO users (id, name, email, password)
         VALUES (${user.id}, ${user.name}, ${user.email}, ${hashedPassword})
@@ -29,6 +32,8 @@ async function seedUsers() {
 
   return insertedUsers;
 }
+
+// Reszta kodu pozostaje bez zmian
 
 async function seedInvoices() {
   await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
