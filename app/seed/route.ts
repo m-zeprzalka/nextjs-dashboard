@@ -1,7 +1,8 @@
-// app/seed/route.js
-import bcrypt from "bcrypt"; // Zostawiamy import, ale modyfikujemy użycie
 import postgres from "postgres";
 import { invoices, customers, revenue, users } from "../lib/placeholder-data";
+
+// Wykomentuj import bcrypt
+// import bcrypt from 'bcrypt';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
@@ -18,9 +19,9 @@ async function seedUsers() {
 
   const insertedUsers = await Promise.all(
     users.map(async (user) => {
-      // Zamiast hashowania, użyjmy tylko prefiksu - TYLKO do celów wdrożenia
+      // Zamiast bcrypt.hash użyj prostego prefiksu
       // const hashedPassword = await bcrypt.hash(user.password, 10);
-      const hashedPassword = "hashed_" + user.password; // Tymczasowe obejście
+      const hashedPassword = `vercel_placeholder_${user.password}`;
 
       return sql`
         INSERT INTO users (id, name, email, password)
